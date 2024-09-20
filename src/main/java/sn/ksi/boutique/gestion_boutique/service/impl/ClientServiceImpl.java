@@ -1,10 +1,10 @@
 package sn.ksi.boutique.gestion_boutique.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import sn.ksi.boutique.gestion_boutique.model.Client;
 import sn.ksi.boutique.gestion_boutique.repository.ClientRepository;
 import sn.ksi.boutique.gestion_boutique.service.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,12 +12,8 @@ import java.util.Optional;
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private final ClientRepository clientRepository;
-
     @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+    private ClientRepository clientRepository;
 
     @Override
     public Client createClient(Client client) {
@@ -25,21 +21,22 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> listAllClients(boolean withAccount) {
-        if (withAccount) {
-            return clientRepository.findByCompteUtilisateurIsNotNull();
-        } else {
-            return clientRepository.findByCompteUtilisateurIsNull();
-        }
+    public List<Client> getAllClients() {
+        return clientRepository.findAll();
     }
 
     @Override
-    public Optional<Client> getClientByTelephone(String telephone) {
-        return clientRepository.findByTelephone(telephone);
+    public Optional<Client> getClientByPhone(String phone) {
+        return clientRepository.findByPhone(phone);
     }
 
     @Override
-    public void deleteClient(Long id) {
-        clientRepository.deleteById(id);
+    public List<Client> getClientsWithAccount() {
+        return clientRepository.findByEmailIsNotNull();
+    }
+
+    @Override
+    public List<Client> getClientsWithoutAccount() {
+        return clientRepository.findByEmailIsNull();
     }
 }

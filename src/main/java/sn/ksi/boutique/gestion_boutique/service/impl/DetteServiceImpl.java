@@ -1,31 +1,34 @@
 package sn.ksi.boutique.gestion_boutique.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import sn.ksi.boutique.gestion_boutique.model.Client;
 import sn.ksi.boutique.gestion_boutique.model.Dette;
 import sn.ksi.boutique.gestion_boutique.repository.DetteRepository;
 import sn.ksi.boutique.gestion_boutique.service.DetteService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class DetteServiceImpl implements DetteService {
 
-    private final DetteRepository detteRepository;
-
     @Autowired
-    public DetteServiceImpl(DetteRepository detteRepository) {
-        this.detteRepository = detteRepository;
+    private DetteRepository detteRepository;
+
+    @Override
+    public Dette createDebt(Client client, Dette debt) {
+        debt.setClient(client);
+        return detteRepository.save(debt);
     }
 
     @Override
-    public Dette createDette(Dette dette) {
-        return detteRepository.save(dette);
+    public List<Dette> getUnpaidDebtsForClient(Long clientId) {
+        return detteRepository.findByClientAndIsPaidFalse(clientId);
     }
 
     @Override
-    public List<Dette> getNonSettledDebts(Long clientId) {
-        // Implémente la logique pour récupérer les dettes non soldées
-        return null;
+    public List<Dette> getAllDettes() {
+        return detteRepository.findAll();
     }
 }

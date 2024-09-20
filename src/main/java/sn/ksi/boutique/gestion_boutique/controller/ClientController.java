@@ -1,17 +1,16 @@
 package sn.ksi.boutique.gestion_boutique.controller;
 
+import sn.ksi.boutique.gestion_boutique.model.Client;
+import sn.ksi.boutique.gestion_boutique.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import sn.ksi.boutique.gestion_boutique.model.Client;
-import sn.ksi.boutique.gestion_boutique.service.ClientService;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/clients")
 public class ClientController {
 
     private final ClientService clientService;
@@ -27,20 +26,12 @@ public class ClientController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Client>> listClients(@RequestParam(required = false) Boolean withAccount) {
-        List<Client> clients = clientService.listAllClients(withAccount != null && withAccount);
-        return ResponseEntity.ok(clients);
+    public ResponseEntity<List<Client>> getAllClients() {
+        return ResponseEntity.ok(clientService.getAllClients());
     }
 
-    @GetMapping("/{telephone}")
-    public ResponseEntity<Client> getClientByTelephone(@PathVariable String telephone) {
-        Optional<Client> client = clientService.getClientByTelephone(telephone);
-        return client.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        clientService.deleteClient(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping("/{phone}")
+    public ResponseEntity<Optional<Client>> getClientByPhone(@PathVariable String phone) {
+        return ResponseEntity.ok(clientService.getClientByPhone(phone));
     }
 }
